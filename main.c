@@ -9,6 +9,9 @@ typedef struct s_stack
 {
     int content;
     struct s_stack *next;
+	int index;
+	int prv;
+	int len;
 } t_stack;
 
 typedef struct s_variables {
@@ -17,6 +20,7 @@ typedef struct s_variables {
 	int		size;
 	int		v_hms;
 }	t_variables;
+
 static int	hms(const char *str, char c)
 {
 	int	i;
@@ -185,12 +189,16 @@ void	add_list(int content, t_stack **stack_a)
 {
 	t_stack *new;
 	t_stack *ref;
+	static int i;
 
 	new = malloc(sizeof(t_stack));
 	if(!new)
 		return ;
 	new->content = content;
 	new->next = NULL;
+	new->len = 1;
+	new->index = i++;
+	new->prv = -1;
 	ref = *stack_a;
 	if(!ref)
 		*stack_a = new;
@@ -215,9 +223,117 @@ void ft_gest(char **av, t_stack **stack_a)
 		i++;
 	}
 }
+
+void ft_sa(t_stack **stack_a)
+{
+	t_stack *tmp;
+	t_stack *head;	
+
+	printf("%p\n", stack_a);
+	if((*stack_a)->next)	
+	{
+		tmp = (*stack_a)->next;
+		(*stack_a)->next = (*stack_a)->next->next;
+		tmp->next = *stack_a;
+		*stack_a = tmp;
+	}
+	printf("%p\n", stack_a);
+}
+
+void ft_pa(t_stack **stack_a,t_stack **stack_b)
+{
+	t_stack *head_b;
+	t_stack *tmp_b;
+
+	head_b = (*stack_b)->next;
+	(*stack_b)->next = *stack_a;
+	*stack_a = *stack_b;
+	*stack_b = head_b;
+}
+void ft_ra(t_stack **stack)
+{
+	t_stack *head;
+	t_stack *hn;
+
+	head = (*stack);
+	hn = (*stack)->next;
+	while((*stack)->next)
+		*stack = (*stack)->next;
+	(*stack)->next = head;
+	(*stack)->next->next = NULL; 
+
+	*stack = hn;
+}
+
+void ft_rra(t_stack **stack)
+{
+	t_stack *end;
+	t_stack *head;
+
+	head = *stack;
+	while((*stack)->next->next)
+		*stack = (*stack)->next;
+	end = *stack;
+	*stack = (*stack)->next;
+	end->next = NULL;
+	(*stack)->next = head;
+	
+
+}
+
+void test(t_stack **stack_a,int maxl,t_stack **max)
+{
+	t_stack *head;
+
+	while(i)
+	{
+		
+	}
+}
+void ft_ml(t_stack **stack_a)
+{
+	int max;
+
+	max = 0;
+	head = *stack_a;
+	while(head->next)
+	{
+		if(max < head->len)
+			max = head->len;
+		head = head->next;
+	}
+	test()
+}
+
+void ft_lis(t_stack **stack_a)
+{
+	t_stack *i;
+	t_stack *j;
+
+	i = (*stack_a)->next;
+	while(i)
+	{
+		j = *stack_a;
+		while(j != i)
+		{
+			if(i->content > j->content)
+			{
+				if(j->len+1 >= i->len)
+				{
+					i->prv = j->index;
+					i->len = j->len+1;
+				}
+			}
+			j = j->next;
+		}
+		i = i->next;
+	}
+
+}
+
 int main(int ac, char *av[])
 {	
-	t_stack *stack_a = NULL;
+	t_stack *stack_a;
 	t_stack *stack_b;
 
 	if(ft_nd(av))
@@ -225,11 +341,16 @@ int main(int ac, char *av[])
 		//error
 	}
 	ft_gest(av, &stack_a);
-	int i = 0;
+	ft_gest(av, &stack_b);
+	// ft_rra(&stack_a);
+	ft_lis(&stack_a);
+
 	printf("ok\n");
+	printf("stack a:\n");
 	while(stack_a)
 	{
-		printf("->%d", stack_a->content);
+		printf("->%d", stack_a->prv);
 		stack_a = stack_a->next;
 	}
+	printf("\nstack b:\n");
 }
