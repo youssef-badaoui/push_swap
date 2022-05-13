@@ -269,21 +269,24 @@ void ft_pa(t_stack **stack_a,t_stack **stack_b)
 }
 void ft_pb(t_stack **stack_b,t_stack **stack_a)
 {
-	t_stack *head_b;
-	t_stack *tmp_b;
+	t_stack *head_a;
+	static int i;
 
-	ft_putstr("pb");
-	head_b = (*stack_b)->next;
-	(*stack_b)->next = *stack_a;
-	*stack_a = *stack_b;
-	*stack_b = head_b;
+	ft_putstr("pb\n");
+	if(*stack_a)
+	{
+		head_a = (*stack_a)->next;
+		(*stack_a)->next = *stack_b;
+		*stack_b = *stack_a;
+		*stack_a = head_a;
+	}
 }
 void ft_ra(t_stack **stack)
 {
 	t_stack *head;
 	t_stack *hn;
 
-	ft_putstr("ra");
+	ft_putstr("ra\n");
 	head = (*stack);
 	hn = (*stack)->next;
 	while((*stack)->next)
@@ -382,6 +385,17 @@ void ft_lis(t_stack **stack_a)
 	}
 }
 
+void ft_div(t_stack **stack_a, t_stack **stack_b,int loop)
+{
+	while(loop--)
+	{
+		if((*stack_a)->len == 600)
+			ft_ra(stack_a);
+		else
+			ft_pb(stack_b, stack_a);
+	}
+}
+
 int main(int ac, char *av[])
 {	
 	t_stack *stack_a;
@@ -392,17 +406,26 @@ int main(int ac, char *av[])
 		//error
 	}
 	ft_gest(av, &stack_a);
-	ft_gest(av, &stack_b);;
 	ft_lis(&stack_a);
 	ft_ml(&stack_a);
-	
+	ft_div(&stack_a, &stack_b, ac - 1);
+	ft_smart();
 
-	printf("ok\n");
+
 	printf("stack a:\n");
 	while(stack_a)
 	{
-		printf("->%d", stack_a->len);
+		printf("->%d", stack_a->content);
 		stack_a = stack_a->next;
 	}
 	printf("\nstack b:\n");
+	while(stack_b)
+	{
+		printf("->%d", stack_b->content);
+		stack_b = stack_b->next;
+	}
+}
+void ft_smart(t_stack **stack_a, t_stack **stack_b)
+{
+	
 }
