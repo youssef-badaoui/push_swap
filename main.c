@@ -138,6 +138,21 @@ int check_space(char *av)
 	return (0);
 }
 
+void	ft_putstr(char *s)
+{
+	int		i;
+
+	i = 0;
+	if (s)
+	{
+		while (s[i])
+		{
+			write(1, &s[i], 1);
+			i++;
+		}
+	}
+}
+
 int ft_nd(char **av)
 {
 	int i;
@@ -157,6 +172,7 @@ int ft_nd(char **av)
 	}
 	return (0);
 }
+
 int	ft_atoi(const char *str)
 {
 	int	i;
@@ -245,6 +261,18 @@ void ft_pa(t_stack **stack_a,t_stack **stack_b)
 	t_stack *head_b;
 	t_stack *tmp_b;
 
+	ft_putstr("pa");
+	head_b = (*stack_b)->next;
+	(*stack_b)->next = *stack_a;
+	*stack_a = *stack_b;
+	*stack_b = head_b;
+}
+void ft_pb(t_stack **stack_b,t_stack **stack_a)
+{
+	t_stack *head_b;
+	t_stack *tmp_b;
+
+	ft_putstr("pb");
 	head_b = (*stack_b)->next;
 	(*stack_b)->next = *stack_a;
 	*stack_a = *stack_b;
@@ -255,6 +283,7 @@ void ft_ra(t_stack **stack)
 	t_stack *head;
 	t_stack *hn;
 
+	ft_putstr("ra");
 	head = (*stack);
 	hn = (*stack)->next;
 	while((*stack)->next)
@@ -277,32 +306,55 @@ void ft_rra(t_stack **stack)
 	*stack = (*stack)->next;
 	end->next = NULL;
 	(*stack)->next = head;
-	
-
 }
 
-void test(t_stack **stack_a,int maxl,t_stack **max)
+void test(t_stack **stack_a,int maxl, int maxi)
 {
 	t_stack *head;
+	int	prv;
+	int i;
+	int loop;
 
-	while(i)
+	i = 0;
+	loop = maxi;
+	while(loop--)
 	{
-		
+		head = *stack_a;
+		while(head->index != maxi)
+			head = head->next;
+		head->len = 600;
+		maxi = head->prv;
+		if(maxi == -1)
+			break;
 	}
-}
-void ft_ml(t_stack **stack_a)
-{
-	int max;
-
-	max = 0;
 	head = *stack_a;
-	while(head->next)
+	while(head)
 	{
-		if(max < head->len)
-			max = head->len;
+		if(head->len != 600)
+			head->len = 0;
 		head = head->next;
 	}
-	test()
+}
+
+void ft_ml(t_stack **stack_a)
+{
+	int maxl;
+	int maxi;
+	t_stack *head;
+
+	maxi = 0;
+	maxl = 0;
+	head = *stack_a;
+	while(head)
+	{
+		if(maxl <= head->len)
+		{
+			maxl = head->len;
+			maxi = head->index;
+		}
+		head = head->next;
+	}
+	test(stack_a, maxl, maxi);
 }
 
 void ft_lis(t_stack **stack_a)
@@ -328,7 +380,6 @@ void ft_lis(t_stack **stack_a)
 		}
 		i = i->next;
 	}
-
 }
 
 int main(int ac, char *av[])
@@ -341,15 +392,16 @@ int main(int ac, char *av[])
 		//error
 	}
 	ft_gest(av, &stack_a);
-	ft_gest(av, &stack_b);
-	// ft_rra(&stack_a);
+	ft_gest(av, &stack_b);;
 	ft_lis(&stack_a);
+	ft_ml(&stack_a);
+	
 
 	printf("ok\n");
 	printf("stack a:\n");
 	while(stack_a)
 	{
-		printf("->%d", stack_a->prv);
+		printf("->%d", stack_a->len);
 		stack_a = stack_a->next;
 	}
 	printf("\nstack b:\n");
