@@ -12,6 +12,7 @@ typedef struct s_stack
 	int index;
 	int prv;
 	int len;
+	int mm;
 } t_stack;
 
 typedef struct s_variables {
@@ -40,6 +41,14 @@ static int	hms(const char *str, char c)
 		i++;
 	}
 	return (count);
+}
+
+int ft_min(int a, int b)
+{
+	if(a < b)
+		return (a);
+	else
+		return (b);
 }
 
 static int	s_lent(const char *str, char c)
@@ -201,6 +210,19 @@ int	ft_atoi(const char *str)
 	return (nb * j);
 }
 
+int	ft_lstsize(t_stack *lst)
+{
+	int	i;
+
+	i = 0;
+	while (lst != NULL)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
+}
+
 void	add_list(int content, t_stack **stack_a)
 {
 	t_stack *new;
@@ -215,6 +237,7 @@ void	add_list(int content, t_stack **stack_a)
 	new->len = 1;
 	new->index = i++;
 	new->prv = -1;
+	new->mm = 0;
 	ref = *stack_a;
 	if(!ref)
 		*stack_a = new;
@@ -225,6 +248,7 @@ void	add_list(int content, t_stack **stack_a)
 		ref->next = new;
 	}
 }
+
 void ft_gest(char **av, t_stack **stack_a)
 {
 	int i;
@@ -267,6 +291,7 @@ void ft_pa(t_stack **stack_a,t_stack **stack_b)
 	*stack_a = *stack_b;
 	*stack_b = head_b;
 }
+
 void ft_pb(t_stack **stack_b,t_stack **stack_a)
 {
 	t_stack *head_a;
@@ -281,6 +306,7 @@ void ft_pb(t_stack **stack_b,t_stack **stack_a)
 		*stack_a = head_a;
 	}
 }
+
 void ft_ra(t_stack **stack)
 {
 	t_stack *head;
@@ -396,6 +422,61 @@ void ft_div(t_stack **stack_a, t_stack **stack_b,int loop)
 	}
 }
 
+void ft_index(t_stack **stack)
+{
+	t_stack *head;
+	int i;
+
+	i = 0;
+	head = *stack;
+	if(head)
+		while(head)
+		{
+			head->index = i++;
+			head = head->next;
+		}
+}
+
+void ft_mm(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack *head_a;
+	t_stack *head_b;
+	int size_a;
+	int size_b;
+
+	size_a = ft_lstsize(*stack_a);
+	size_b = ft_lstsize(*stack_b);
+	head_b = *stack_b;
+	if(!(*stack_a) || !(*stack_b))
+		return;
+	
+	while(head_b)
+	{
+		head_a = *stack_a;
+		if((head_a->index+1 < size_a/2 && head_b->index+1 < size_b/2) || (head_a->index+1 > size_a/2 && head_b->index+1 > size_b/2))
+			ft_short()
+
+
+
+		while(head_a && head_a->content < head_b->content)
+			head_a = head_a->next;
+		if(head_a->content < head_b->content)
+		{
+			//special case
+		}
+		head_b->mm = ft_min(head_a->index, (size_a - head_a->index)) + ft_min(head_b->index, (size_b - head_b->index)) + 1;
+		head_b = head_b->next;
+	}
+}
+
+void ft_smart(t_stack **stack_a, t_stack **stack_b)
+{
+	ft_index(stack_a);
+	ft_index(stack_b);
+	ft_mm(stack_a, stack_b);
+
+}
+
 int main(int ac, char *av[])
 {	
 	t_stack *stack_a;
@@ -409,8 +490,8 @@ int main(int ac, char *av[])
 	ft_lis(&stack_a);
 	ft_ml(&stack_a);
 	ft_div(&stack_a, &stack_b, ac - 1);
-	ft_smart();
-
+	// ft_smart(&stack_a,&stack_b);
+	
 
 	printf("stack a:\n");
 	while(stack_a)
@@ -425,7 +506,5 @@ int main(int ac, char *av[])
 		stack_b = stack_b->next;
 	}
 }
-void ft_smart(t_stack **stack_a, t_stack **stack_b)
-{
-	
-}
+
+
