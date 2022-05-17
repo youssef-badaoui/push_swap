@@ -51,6 +51,14 @@ int ft_min(int a, int b)
 		return (b);
 }
 
+int ft_max(int a, int b)
+{
+	if(a > b)
+		return (a);
+	else
+		return (b);
+}
+
 static int	s_lent(const char *str, char c)
 {
 	int	i;
@@ -323,11 +331,42 @@ void ft_ra(t_stack **stack)
 	*stack = hn;
 }
 
+void ft_rb(t_stack **stack)
+{
+	t_stack *head;
+	t_stack *hn;
+
+	ft_putstr("rb\n");
+	head = (*stack);
+	hn = (*stack)->next;
+	while((*stack)->next)
+		*stack = (*stack)->next;
+	(*stack)->next = head;
+	(*stack)->next->next = NULL; 
+
+	*stack = hn;
+}
+
 void ft_rra(t_stack **stack)
 {
 	t_stack *end;
 	t_stack *head;
 
+	head = *stack;
+	while((*stack)->next->next)
+		*stack = (*stack)->next;
+	end = *stack;
+	*stack = (*stack)->next;
+	end->next = NULL;
+	(*stack)->next = head;
+}
+
+void ft_rrb(t_stack **stack)
+{
+	t_stack *end;
+	t_stack *head;
+
+	ft_putstr("rrb\n");
 	head = *stack;
 	while((*stack)->next->next)
 		*stack = (*stack)->next;
@@ -453,28 +492,67 @@ void ft_mm(t_stack **stack_a, t_stack **stack_b)
 	while(head_b)
 	{
 		head_a = *stack_a;
-		if((head_a->index+1 < size_a/2 && head_b->index+1 < size_b/2) || (head_a->index+1 > size_a/2 && head_b->index+1 > size_b/2))
-			ft_short()
-
-
-
-		while(head_a && head_a->content < head_b->content)
+		while(head_a)
+		{
 			head_a = head_a->next;
+			if(head_a->content < head_b->content && head_a->next->content > head_b->content)
+			{
+				head_a = head_a->next;
+				break;
+			}
+		}
+		
 		if(head_a->content < head_b->content)
 		{
 			//special case
 		}
-		head_b->mm = ft_min(head_a->index, (size_a - head_a->index)) + ft_min(head_b->index, (size_b - head_b->index)) + 1;
+		if((head_a->index+1 < size_a/2 && head_b->index+1 < size_b/2) || (head_a->index+1 > size_a/2 && head_b->index+1 > size_b/2))
+		{
+			head_b->mm = ft_max(ft_min(head_a->index, (size_a - head_a->index)), ft_min(head_b->index, (size_b - head_b->index)));
+			head_b = head_b->next;
+		}
+		else
+		{
+			head_b->mm = ft_min(head_a->index, (size_a - head_a->index)) + ft_min(head_b->index, (size_b - head_b->index));
+			head_b = head_b->next;
+		}
+	}
+}
+
+void ft_mb(t_stack **stack_b)
+{
+	t_stack *head_b;
+	int min;
+
+	min = 500;
+	head_b = *stack_b;
+	while(head_b)
+	{
+		if(min > head_b->mm)
+				min = head_b->mm;
 		head_b = head_b->next;
 	}
+	head_b = *stack_b;
+	while (head_b)
+	{
+		if(head_b->mm == min)
+			head_b->mm = 0;
+		head_b = head_b->next;
+	}	
 }
 
 void ft_smart(t_stack **stack_a, t_stack **stack_b)
 {
-	ft_index(stack_a);
-	ft_index(stack_b);
-	ft_mm(stack_a, stack_b);
+	
+	// while(*stack_b)
+	// {
+		ft_index(stack_a);
+		ft_index(stack_b);
+		ft_mm(stack_a, stack_b);
+		// ft_mb(stack_b);
+		// ft_best(stack_a,stack_b);
 
+	// }
 }
 
 int main(int ac, char *av[])
@@ -490,21 +568,66 @@ int main(int ac, char *av[])
 	ft_lis(&stack_a);
 	ft_ml(&stack_a);
 	ft_div(&stack_a, &stack_b, ac - 1);
-	// ft_smart(&stack_a,&stack_b);
+	ft_smart(&stack_a,&stack_b);
 	
 
 	printf("stack a:\n");
 	while(stack_a)
 	{
-		printf("->%d", stack_a->content);
+		printf("->%d", stack_a->mm);
 		stack_a = stack_a->next;
 	}
 	printf("\nstack b:\n");
 	while(stack_b)
 	{
-		printf("->%d", stack_b->content);
+		printf("->%d", stack_b->mm);
 		stack_b = stack_b->next;
 	}
 }
 
+void ft_top(t_stack **stack_a ,t_stack **stack_b, int index)
+{
+	t_stack *head_b;
+	int size;
 
+	size = ft_lstsize(*stack_b);
+	head_b = *stack_b;
+	while(head_b->index != index)
+		head_b = head_b->next;
+	if(head_b->index > size/2)
+	{
+		while(head_b != *stack_b)
+			ft_rb(stack_b);
+	}
+	else
+	{
+		while(head_b != *stack_b)
+			ft_rrb(stack_b);
+	}
+	ft_pb(stack_b, stack_a);
+} 
+
+void ft_best(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack *head_a;
+	t_stack *head_b;
+
+	head_a = *stack_a;
+	head_b = *stack_b;
+
+	while(head_b)
+	{
+		if(head_b->mm == 0)
+		{
+			while(head_a->content < head_b->content && head_a->next)
+				head_a = head_a->next;
+			if(head_a->content < head_b->content)
+				ft_top(stack_a, stack_b, head_b->index);
+			else
+			{
+
+			}
+		}
+	}
+	
+}
