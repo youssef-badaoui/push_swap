@@ -476,6 +476,50 @@ void ft_index(t_stack **stack)
 		}
 }
 
+t_stack *ft_minpair(t_stack *head_a)
+{
+	t_stack *tmp;
+	int min;
+
+	min = 2147483647;
+	tmp = head_a;
+	while(head_a)
+	{
+		if(head_a->content < min)
+			min = head_a->content;
+		head_a= head_a->next;
+	}
+	head_a = tmp;
+	while(head_a)
+	{
+		if(head_a->content == min)
+			break;
+	}
+	return (head_a);
+}
+
+t_stack *ft_pairing(t_stack *head_a, t_stack *head_b)
+{
+	t_stack *tmp;
+
+	tmp = head_a;
+	while(head_a)
+	{
+		if(!head_a->next)
+		{
+			tmp = ft_minpair(tmp);
+			return(tmp);
+		}
+		if(head_a->content < head_b->content && head_a->next->content > head_b->content)
+		{
+			head_a = head_a->next;
+			break;
+		}
+		head_a = head_a->next;
+	}
+	return (head_a);
+}
+
 void ft_mm(t_stack **stack_a, t_stack **stack_b)
 {
 	t_stack *head_a;
@@ -488,34 +532,18 @@ void ft_mm(t_stack **stack_a, t_stack **stack_b)
 	head_b = *stack_b;
 	if(!(*stack_a) || !(*stack_b))
 		return;
-	
 	while(head_b)
 	{
 		head_a = *stack_a;
-		while(head_a)
-		{
-			head_a = head_a->next;
-			if(head_a->content < head_b->content && head_a->next->content > head_b->content)
-			{
-				head_a = head_a->next;
-				break;
-			}
-		}
-		
-		if(head_a->content < head_b->content)
-		{
-			//special case
-		}
+		head_a = ft_pairing(head_a, head_b);
+
+		printf("%d-------->%d\n",head_b->index , head_a->index); 
+
 		if((head_a->index+1 < size_a/2 && head_b->index+1 < size_b/2) || (head_a->index+1 > size_a/2 && head_b->index+1 > size_b/2))
-		{
 			head_b->mm = ft_max(ft_min(head_a->index, (size_a - head_a->index)), ft_min(head_b->index, (size_b - head_b->index)));
-			head_b = head_b->next;
-		}
 		else
-		{
 			head_b->mm = ft_min(head_a->index, (size_a - head_a->index)) + ft_min(head_b->index, (size_b - head_b->index));
-			head_b = head_b->next;
-		}
+		head_b = head_b->next;
 	}
 }
 
@@ -541,18 +569,69 @@ void ft_mb(t_stack **stack_b)
 	}	
 }
 
+void ft_upa(t_stack **stack_a, t_stack *head_a)
+{
+	t_stack *tmp;
+	int size;
+
+	tmp = *stack_a;
+	size = ft_lstsize(*stack_a);
+	if(head_a->index < size/2)
+		while(head_a != *stack_a)
+			ft_ra(stack_a);
+	else
+		while(head_a != *stack_a)
+			ft_rra(stack_a);
+}
+
+void ft_upb(t_stack **stack_b, t_stack *head_b)
+{
+	t_stack *tmp;
+	int size;
+
+	tmp = *stack_b;
+	size = ft_lstsize(*stack_b);
+	if(head_b->index < size/2)
+		while(head_b != *stack_b)
+			ft_rb(stack_b);
+	else
+		while(head_b != *stack_b)
+			ft_rrb(stack_b);
+}
+
+void ft_best(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack *head_a;
+	t_stack *head_b;
+
+	head_a = *stack_a;
+	head_b = *stack_b;
+
+	while(head_b)
+	{
+		if(head_b->mm == 0)
+		{
+			head_a = ft_pairing(head_a, head_b);
+			ft_upa(stack_a, head_a);
+			ft_upb(stack_b, head_b);
+			ft_pb(stack_b,stack_a);
+		}
+		head_b = head_b->next;
+	}
+}
+
 void ft_smart(t_stack **stack_a, t_stack **stack_b)
 {
 	
-	// while(*stack_b)
-	// {
+	while(*stack_b)
+	{
 		ft_index(stack_a);
 		ft_index(stack_b);
 		ft_mm(stack_a, stack_b);
-		// ft_mb(stack_b);
-		// ft_best(stack_a,stack_b);
-
-	// }
+		ft_mb(stack_b);
+		ft_best(stack_a,stack_b);
+	}
+	
 }
 
 int main(int ac, char *av[])
@@ -574,60 +653,13 @@ int main(int ac, char *av[])
 	printf("stack a:\n");
 	while(stack_a)
 	{
-		printf("->%d", stack_a->mm);
+		printf("->%d", stack_a->content);
 		stack_a = stack_a->next;
 	}
 	printf("\nstack b:\n");
 	while(stack_b)
 	{
-		printf("->%d", stack_b->mm);
+		printf("->%d", stack_b->content);
 		stack_b = stack_b->next;
 	}
-}
-
-void ft_top(t_stack **stack_a ,t_stack **stack_b, int index)
-{
-	t_stack *head_b;
-	int size;
-
-	size = ft_lstsize(*stack_b);
-	head_b = *stack_b;
-	while(head_b->index != index)
-		head_b = head_b->next;
-	if(head_b->index > size/2)
-	{
-		while(head_b != *stack_b)
-			ft_rb(stack_b);
-	}
-	else
-	{
-		while(head_b != *stack_b)
-			ft_rrb(stack_b);
-	}
-	ft_pb(stack_b, stack_a);
-} 
-
-void ft_best(t_stack **stack_a, t_stack **stack_b)
-{
-	t_stack *head_a;
-	t_stack *head_b;
-
-	head_a = *stack_a;
-	head_b = *stack_b;
-
-	while(head_b)
-	{
-		if(head_b->mm == 0)
-		{
-			while(head_a->content < head_b->content && head_a->next)
-				head_a = head_a->next;
-			if(head_a->content < head_b->content)
-				ft_top(stack_a, stack_b, head_b->index);
-			else
-			{
-
-			}
-		}
-	}
-	
 }
