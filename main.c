@@ -168,26 +168,6 @@ void	ft_putstr(char *s)
 	}
 }
 
-int ft_nd(char **av)
-{
-	int i;
-	int j;
-
-	i = 1;
-	while(av[i])
-	{
-		j = 0;
-		while(av[i][j])
-		{
-			if(av[i][j] < 0 || av[i][j] > 9)
-				return (1);
-			j++;
-		}
-		i++;
-	}
-	return (0);
-}
-
 int	ft_atoi(const char *str)
 {
 	int	i;
@@ -270,20 +250,33 @@ void ft_gest(char **av, t_stack **stack_a)
 	}
 }
 
-// void ft_sa(t_stack **stack_a)
-// {
-// 	t_stack *tmp;
-// 	t_stack *head;
-// 	ft_putstr("sa\n");
-// 	if((*stack_a)->next)	
-// 	{
-// 		tmp = (*stack_a)->next;
-// 		(*stack_a)->next = (*stack_a)->next->next;
-// 		tmp->next = *stack_a;
-// 		*stack_a = tmp;
-// 	}
-// 	printf("%p\n", stack_a);
-// }
+void ft_sa(t_stack **stack_a)
+{
+	t_stack *tmp;
+	t_stack *head;
+	ft_putstr("sa\n");
+	if((*stack_a)->next)	
+	{
+		tmp = (*stack_a)->next;
+		(*stack_a)->next = (*stack_a)->next->next;
+		tmp->next = *stack_a;
+		*stack_a = tmp;
+	}
+}
+
+void ft_sb(t_stack **stack_b)
+{
+	t_stack *tmp;
+	t_stack *head;
+	ft_putstr("sa\n");
+	if((*stack_b)->next)	
+	{
+		tmp = (*stack_b)->next;
+		(*stack_b)->next = (*stack_b)->next->next;
+		tmp->next = *stack_b;
+		*stack_b = tmp;
+	}
+}
 
 void ft_pa(t_stack **stack_a,t_stack **stack_b)
 {
@@ -505,7 +498,7 @@ void ft_lis(t_stack **stack_a)
 
 void ft_div(t_stack **stack_a, t_stack **stack_b,int loop)
 {
-	while(loop--)
+	while(loop-- && ft_lstsize(*stack_a) > 1)
 	{
 		if((*stack_a)->len == 600)
 			ft_ra(stack_a);
@@ -717,7 +710,6 @@ void ft_best(t_stack **stack_a, t_stack **stack_b)
 		if(head_b->mm == 0)
 		{
 			head_a = ft_pairing(head_a, head_b);
-			// printf("%d---------->%d\n", head_a->content, head_b->content);
 			if((head_a->index >= size_a/2 && head_b->index >= size_b/2) || (head_a->index <= size_a/2 && head_b->index <= size_b/2))
 			{
 				ft_up(stack_a, stack_b, head_a, head_b);
@@ -779,18 +771,76 @@ void ft_smart(t_stack **stack_a, t_stack **stack_b)
 	ft_end(stack_a);
 }
 
+int ft_dblk(t_stack *stack_a)
+{
+	t_stack *head_a;
+	while(stack_a)
+	{
+		head_a = stack_a->next;
+		while(head_a)
+		{
+			if(head_a->content == stack_a->content)
+				return (1);
+			head_a = head_a->next;
+		}
+		stack_a = stack_a->next;
+	}
+	return (0);
+}
+
+int ft_nd(char **av)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while(av[i])
+	{
+		j = 0;
+		while(av[i][j])
+		{
+			if(av[i][j] < '0' || av[i][j] > '9')
+				return (1);
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
+void ft_error(t_stack *stack_a, char **av)
+{
+	if(ft_dblk(stack_a) || ft_nd(av + 1))
+	{
+		ft_putstr("error\n");
+		exit(1);
+	}
+}
+
+int ft_sorted(t_stack *stack_a)
+{
+	while(stack_a->next)
+	{
+		if(stack_a->content > stack_a->next->content)
+			return (0);
+		stack_a = stack_a->next;
+	}
+	return (1);
+}
+
 int main(int ac, char *av[])
 {	
 	t_stack *stack_a;
 	t_stack *stack_b;
 
-	if(ft_nd(av))
-	{
-		//error
-	}
 	ft_gest(av, &stack_a);
+	ft_error(stack_a, av);
+	if(ft_sorted(stack_a))
+		exit(1);
+	// ft_shortsort(&stack_a);
 	ft_lis(&stack_a);
 	ft_ml(&stack_a);
 	ft_div(&stack_a, &stack_b, ac - 1);
 	ft_smart(&stack_a,&stack_b);
 }
+
