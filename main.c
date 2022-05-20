@@ -1,26 +1,5 @@
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-
-
-
-typedef struct s_stack
-{
-    int content;
-    struct s_stack *next;
-	int index;
-	int prv;
-	int len;
-	int mm;
-} t_stack;
-
-typedef struct s_variables {
-	int		i;
-	int		n;
-	int		size;
-	int		v_hms;
-}	t_variables;
+#include "push_swap.h"
 
 static int	hms(const char *str, char c)
 {
@@ -168,11 +147,11 @@ void	ft_putstr(char *s)
 	}
 }
 
-int	ft_atoi(const char *str)
+long long	ft_atoi(const char *str)
 {
-	int	i;
-	int	j;
-	int	nb;
+	long long	i;
+	long long	j;
+	long long	nb;
 
 	i = 0;
 	j = 1;
@@ -209,7 +188,7 @@ int	ft_lstsize(t_stack *lst)
 	return (i);
 }
 
-void	add_list(int content, t_stack **stack_a)
+void	add_list(long long content, t_stack **stack_a)
 {
 	t_stack *new;
 	t_stack *ref;
@@ -351,7 +330,6 @@ void ft_rr(t_stack **stack_a, t_stack **stack_b)
 	(*stack_a)->next = head_a;
 	(*stack_a)->next->next = NULL; 
 	*stack_a = hn_a;
-	/*-----------------------*/
 	head_b = (*stack_b);
 	hn = (*stack_b)->next;
 	while((*stack_b)->next)
@@ -800,7 +778,11 @@ int ft_nd(char **av)
 		while(av[i][j])
 		{
 			if(av[i][j] < '0' || av[i][j] > '9')
-				return (1);
+			{
+				if(av[i][j] == '-' && j == 0);
+				else
+					return(1);
+			}
 			j++;
 		}
 		i++;
@@ -810,10 +792,23 @@ int ft_nd(char **av)
 
 void ft_error(t_stack *stack_a, char **av)
 {
-	if(ft_dblk(stack_a) || ft_nd(av + 1))
+	t_stack *head_a;
+
+	head_a = stack_a;
+	if(ft_dblk(head_a) || ft_nd(av + 1))
 	{
 		ft_putstr("error\n");
 		exit(1);
+	}
+
+	while(stack_a)
+	{
+		if(stack_a->content > 2147483647 || stack_a->content < -2147483648)
+		{
+			ft_putstr("error\n");
+			exit(1);
+		}
+		stack_a = stack_a->next;
 	}
 }
 
@@ -828,19 +823,157 @@ int ft_sorted(t_stack *stack_a)
 	return (1);
 }
 
+int ft_sortedrev(t_stack *stack_a)
+{
+	while(stack_a->next)
+	{
+		if(stack_a->content < stack_a->next->content)
+			return (0);
+		stack_a = stack_a->next;
+	}
+	return (1);
+}
+
+void	ft_sortwo(t_stack **stack_a)
+{
+	if((*stack_a)->content > (*stack_a)->next->content)
+		ft_sa(stack_a);
+}
+
+void ft_sortre(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack *head_a;
+	int min;
+	int im;
+
+	min = 2147483647;
+	head_a = *stack_a;
+	ft_index(stack_a);
+	while(head_a)
+	{
+		if(head_a->content < min)
+		{
+			min = head_a->content;
+			im = head_a->index;
+		}
+		head_a = head_a->next;
+	}
+	if(im == 0)
+	{
+		ft_pb(stack_b, stack_a);
+		ft_sortwo(stack_a);
+		ft_pa(stack_a, stack_b);
+	}
+	else if(im == 1)
+		{
+			ft_rra(stack_a);
+			ft_sortwo(stack_a);
+			ft_rra(stack_a);
+		}
+	else 
+		{
+			ft_sortwo(stack_a);
+			ft_rra(stack_a);
+		}
+}
+
+void	ft_sortfor(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack *head_a;
+	int min;
+	int im;
+
+	min = 2147483647;
+	head_a = *stack_a;
+	while(head_a)
+	{
+		if(head_a->content < min)
+		{
+			min = head_a->content;
+			im = head_a->index;
+		}
+		head_a = head_a->next;
+	}
+	if(im < 2)
+		while((*stack_a)->content != min)
+			ft_ra(stack_a);
+	else
+		while((*stack_a)->content != min)
+			ft_rra(stack_a);
+	ft_pb(stack_b, stack_a);
+	ft_sortre(stack_a, stack_b);
+	ft_pa(stack_a, stack_b);
+}
+
+void	ft_sortfive(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack *head_a;
+	int min;
+	int im;
+	int i;
+
+	i = 2;
+	while(i--)
+	{
+		min = 2147483647;
+		head_a = *stack_a;
+		while(head_a)
+		{
+			if(head_a->content < min)
+			{
+				min = head_a->content;
+				im = head_a->index;
+			}
+			head_a = head_a->next;
+		}
+		if(im <= 2)
+			while((*stack_a)->content != min)
+				ft_ra(stack_a);
+		else
+			while((*stack_a)->content != min)
+				ft_rra(stack_a);
+		ft_pb(stack_b, stack_a);
+	}
+	ft_sortre(stack_a, stack_b);
+	ft_pa(stack_a, stack_b);
+	ft_pa(stack_a, stack_b);
+}
+
+void	ft_shortsort(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack *head_a;
+
+	head_a = *stack_a;
+	if(ft_lstsize(*stack_a) == 3)
+		ft_sortre(stack_a, stack_b);
+	else if(ft_lstsize(*stack_a) == 5)
+		ft_sortfive(stack_a, stack_b);
+	else if(ft_lstsize(*stack_a) == 2)
+		ft_sortwo(stack_a);
+	else if(ft_lstsize(*stack_a) == 4)
+		ft_sortfor(stack_a, stack_b);
+}
+
 int main(int ac, char *av[])
 {	
 	t_stack *stack_a;
 	t_stack *stack_b;
-
 	ft_gest(av, &stack_a);
+	/*this will protect all the upcoming fonctions*/
+	if(!stack_a)
+		exit(1);
 	ft_error(stack_a, av);
 	if(ft_sorted(stack_a))
 		exit(1);
-	// ft_shortsort(&stack_a);
-	ft_lis(&stack_a);
-	ft_ml(&stack_a);
-	ft_div(&stack_a, &stack_b, ac - 1);
-	ft_smart(&stack_a,&stack_b);
+	if((ac - 1) < 6) 
+		ft_shortsort(&stack_a, &stack_b);
+	else
+	{
+		ft_lis(&stack_a);
+		ft_ml(&stack_a);
+		ft_div(&stack_a, &stack_b, ac - 1);
+		ft_smart(&stack_a,&stack_b);
+	}
 }
+
 

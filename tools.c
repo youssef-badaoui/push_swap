@@ -1,1 +1,0 @@
-void ft_sa(t_stack )
