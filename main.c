@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ybadaoui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/21 16:40:38 by ybadaoui          #+#    #+#             */
+/*   Updated: 2022/05/21 16:40:39 by ybadaoui         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 
 void	add_list(long long content, t_stack **stack_a)
@@ -30,13 +42,16 @@ void	ft_gest(char **av, t_stack **stack_a)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
 	while (av[i])
 	{
 		if (check_space(av[i]))
 			ft_gest(ft_split(av[i], ' '), stack_a);
 		else
+		{
+			ft_nd(av[i]);
 			add_list(ft_atoi(av[i]), stack_a);
+		}
 		i++;
 	}
 }
@@ -61,10 +76,7 @@ void	ft_best(t_stack **stack_a, t_stack **stack_b)
 				|| (head_a->index <= size_a / 2 && head_b->index <= size_b / 2))
 				ft_up(stack_a, stack_b, head_a, head_b);
 			else
-			{
-				ft_upa(stack_a, head_a);
-				ft_upb(stack_b, head_b);
-			}
+				ft_upab(stack_a, stack_b, head_a, head_b);
 			ft_pa(stack_a, stack_b);
 			break ;
 		}
@@ -74,9 +86,6 @@ void	ft_best(t_stack **stack_a, t_stack **stack_b)
 
 void	ft_smart(t_stack **stack_a, t_stack **stack_b)
 {
-	t_stack	*head_a;
-	t_stack	*head_b;
-
 	while (*stack_b)
 	{
 		ft_index(stack_a);
@@ -93,13 +102,14 @@ int	main(int ac, char *av[])
 	t_stack	*stack_a;
 	t_stack	*stack_b;
 
-	ft_gest(av, &stack_a);
+	(void)ac;
+	ft_gest(av + 1, &stack_a);
 	if (!stack_a)
 		exit(1);
 	ft_error(stack_a, av);
 	if (ft_sorted(stack_a))
 		exit(1);
-	if ((ac - 1) < 6)
+	if (ft_lstsize(stack_a) < 6)
 		ft_shortsort(&stack_a, &stack_b);
 	else
 	{

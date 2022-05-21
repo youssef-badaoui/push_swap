@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lis.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ybadaoui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/21 16:41:10 by ybadaoui          #+#    #+#             */
+/*   Updated: 2022/05/21 16:41:13 by ybadaoui         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 
 void	ft_ml(t_stack **stack_a)
@@ -26,6 +38,7 @@ void	ft_lis(t_stack **stack_a)
 	t_stack	*i;
 	t_stack	*j;
 
+	ft_index(stack_a);
 	i = (*stack_a)->next;
 	while (i)
 	{
@@ -48,6 +61,7 @@ void	ft_lis(t_stack **stack_a)
 
 void	ft_div(t_stack **stack_a, t_stack **stack_b, int loop)
 {
+	loop = ft_lstsize(*stack_a);
 	while (loop-- && ft_lstsize(*stack_a) > 1)
 	{
 		if ((*stack_a)->len == 600)
@@ -60,11 +74,11 @@ void	ft_div(t_stack **stack_a, t_stack **stack_b, int loop)
 void	test(t_stack **stack_a, int maxl, int maxi)
 {
 	t_stack	*head;
-	int		prv;
 	int		i;
 	int		loop;
 
 	i = 0;
+	(void)maxl;
 	loop = maxi;
 	while (loop--)
 	{

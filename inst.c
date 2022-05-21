@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   inst.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ybadaoui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/21 16:40:51 by ybadaoui          #+#    #+#             */
+/*   Updated: 2022/05/21 16:40:53 by ybadaoui         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 
 void	ft_sa(t_stack **stack_a)
 {
 	t_stack	*tmp;
-	t_stack	*head;
 
 	ft_putstr("sa\n");
 	if ((*stack_a)->next)
@@ -18,7 +29,6 @@ void	ft_sa(t_stack **stack_a)
 void	ft_sb(t_stack **stack_b)
 {
 	t_stack	*tmp;
-	t_stack	*head;
 
 	ft_putstr("sa\n");
 	if ((*stack_b)->next)
@@ -33,7 +43,6 @@ void	ft_sb(t_stack **stack_b)
 void	ft_pa(t_stack **stack_a, t_stack **stack_b)
 {
 	t_stack	*head_b;
-	t_stack	*tmp_b;
 
 	ft_putstr("pa\n");
 	head_b = (*stack_b)->next;
@@ -45,7 +54,6 @@ void	ft_pa(t_stack **stack_a, t_stack **stack_b)
 void	ft_pb(t_stack **stack_b, t_stack **stack_a)
 {
 	t_stack		*head_a;
-	static int	i;
 
 	ft_putstr("pb\n");
 	if (*stack_a)

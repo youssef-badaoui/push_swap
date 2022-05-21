@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   inst2.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ybadaoui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/21 16:40:57 by ybadaoui          #+#    #+#             */
+/*   Updated: 2022/05/21 16:42:33 by ybadaoui         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 
 void	ft_rb(t_stack **stack_b)
@@ -56,33 +68,11 @@ void	ft_rra(t_stack **stack)
 
 void	ft_rrr(t_stack **stack_a, t_stack **stack_b)
 {
-	t_stack	*end;
-	t_stack	*head;
 	t_stack	**stack;
 
+	stack = NULL;
 	ft_putstr("rrr\n");
-	if (ft_lstsize(*stack_a) > 1)
-	{
-		stack = stack_a;
-		head = *stack;
-		while ((*stack)->next->next)
-			*stack = (*stack)->next;
-		end = *stack;
-		*stack = (*stack)->next;
-		end->next = NULL;
-		(*stack)->next = head;
-	}
-	if (ft_lstsize(*stack_b) > 1)
-	{
-		stack = stack_b;
-		head = *stack;
-		while ((*stack)->next->next)
-			*stack = (*stack)->next;
-		end = *stack;
-		*stack = (*stack)->next;
-		end->next = NULL;
-		(*stack)->next = head;
-	}
+	ft_frrr(stack_a, stack_b, stack);
 }
 
 void	ft_rrb(t_stack **stack)

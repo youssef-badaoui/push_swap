@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shortsort.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ybadaoui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/21 16:42:49 by ybadaoui          #+#    #+#             */
+/*   Updated: 2022/05/21 16:42:51 by ybadaoui         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 
 void	ft_sortwo(t_stack **stack_a)
@@ -15,15 +27,7 @@ void	ft_sortre(t_stack **stack_a, t_stack **stack_b)
 	min = 2147483647;
 	head_a = *stack_a;
 	ft_index(stack_a);
-	while (head_a)
-	{
-		if (head_a->content < min)
-		{
-			min = head_a->content;
-			im = head_a->index;
-		}
-		head_a = head_a->next;
-	}
+	ft_fmin(head_a, &min, &im);
 	if (im == 0)
 	{
 		ft_pb(stack_b, stack_a);
@@ -83,15 +87,7 @@ void	ft_sortfive(t_stack **stack_a, t_stack **stack_b)
 	{
 		min = 2147483647;
 		head_a = *stack_a;
-		while (head_a)
-		{
-			if (head_a->content < min)
-			{
-				min = head_a->content;
-				im = head_a->index;
-			}
-			head_a = head_a->next;
-		}
+		ft_fmin(head_a, &min, &im);
 		if (im <= 2)
 			while ((*stack_a)->content != min)
 				ft_ra(stack_a);

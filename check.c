@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ybadaoui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/21 16:40:30 by ybadaoui          #+#    #+#             */
+/*   Updated: 2022/05/21 16:40:32 by ybadaoui         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
 
 void	ft_error(t_stack *stack_a, char **av)
@@ -5,7 +17,8 @@ void	ft_error(t_stack *stack_a, char **av)
 	t_stack	*head_a;
 
 	head_a = stack_a;
-	if (ft_dblk(head_a) || ft_nd(av + 1))
+	(void)av;
+	if (ft_dblk(head_a))
 	{
 		ft_putstr("error\n");
 		exit(1);
@@ -39,29 +52,25 @@ int	ft_dblk(t_stack *stack_a)
 	return (0);
 }
 
-int	ft_nd(char **av)
+void	ft_nd(char *av)
 {
 	int	i;
-	int	j;
 
 	i = 0;
 	while (av[i])
 	{
-		j = 0;
-		while (av[i][j])
+		if (av[i] < '0' || av[i] > '9')
 		{
-			if (av[i][j] < '0' || av[i][j] > '9')
+			if (av[i] == '-' && i == 0)
+				;
+			else
 			{
-				if (av[i][j] == '-' && j == 0)
-					;
-				else
-					return (1);
+				ft_putstr("error\n");
+				exit(1);
 			}
-			j++;
 		}
 		i++;
 	}
-	return (0);
 }
 
 int	ft_sorted(t_stack *stack_a)
